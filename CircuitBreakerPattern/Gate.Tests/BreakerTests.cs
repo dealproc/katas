@@ -3,7 +3,7 @@ using Xunit;
 namespace Gate.Tests;
 
 public class BreakerTests {
-    private Breaker _sut = new Breaker();
+    private Breaker<bool> _sut = new Breaker<bool>();
 
     [Fact]
     public async Task should_succeed() {
