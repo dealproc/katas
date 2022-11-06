@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls(new[] { "https://+:7120/" });
+builder.WebHost.UseUrls(new[] { "https://localhost:7120/" });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

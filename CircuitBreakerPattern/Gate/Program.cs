@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls(new[] { "https://+:7121/" });
+builder.WebHost.UseUrls(new[] { "https://localhost:7121/" });
 
 // Add services to the container.
 

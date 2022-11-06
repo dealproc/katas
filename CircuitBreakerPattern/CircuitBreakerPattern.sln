@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clock", "Clock\Clock.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gate", "Gate\Gate.csproj", "{1CA32720-1F6D-4842-8AE1-309AB8538B76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gate.Tests", "Gate.Tests\Gate.Tests.csproj", "{F9FD6777-C517-480A-879D-6E2E75584230}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{1CA32720-1F6D-4842-8AE1-309AB8538B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA32720-1F6D-4842-8AE1-309AB8538B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA32720-1F6D-4842-8AE1-309AB8538B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9FD6777-C517-480A-879D-6E2E75584230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9FD6777-C517-480A-879D-6E2E75584230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9FD6777-C517-480A-879D-6E2E75584230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9FD6777-C517-480A-879D-6E2E75584230}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
