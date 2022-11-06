@@ -1,2 +1,15 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿var client = new HttpClient();
+client.BaseAddress = new Uri("https://localhost:7120");
+while(true){
+    var response = await client.GetAsync("TimeIs");
+
+    try {
+        response.EnsureSuccessStatusCode();
+        Console.WriteLine(await response.Content.ReadAsStringAsync());
+    }
+    catch {
+        Console.WriteLine($"Error Response: {response.StatusCode}");
+    }
+
+    await Task.Delay(TimeSpan.FromSeconds(2));
+}
