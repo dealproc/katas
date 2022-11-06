@@ -25,3 +25,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+public static class Switches {
+    public static bool ApiShouldThrowException = false;
+}
