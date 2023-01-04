@@ -2,24 +2,21 @@ namespace Toolkit;
 
 public class Breaker<T> {
     private readonly IClock _clock;
-    private int _failedAttempts = 0;
-    private long _halfOpenAt = 0;
+    internal int _failedAttempts = 0;
+    internal long _halfOpenAt = 0;
+    internal bool _circuitIsFaulted => _failedAttempts >= TripAfterFailuresCount;
+    internal bool _circuitIsHalfOpen => _halfOpenAt < _clock.UtcNow.Ticks && _halfOpenAt != 0;
 
     public int TripAfterFailuresCount { get; set; } = 3;
     public int TryCloseAfterSeconds { get; set; } = 15;
-    public Task<T> WhenOpen { get; set; } = new Task<T>(() => throw new NotImplementedException());
-
+    public Task<T> WhenOpen { get; set; } = Task.FromException<T>(new NotImplementedException());
 
     public Breaker(IClock clock) {
         _clock = clock;
     }
 
-
-    private bool CircuitIsFaulted => _failedAttempts >= TripAfterFailuresCount;
-    private bool CircuitIsHalfOpen => _halfOpenAt < DateTime.UtcNow.Ticks && _halfOpenAt != 0;
-
     public async Task<T> Execute(Func<Task<T>> action) {
-        if(CircuitIsHalfOpen) {
+        if (_circuitIsHalfOpen) {
             Console.WriteLine("Circuit is half-open");
             try {
                 var response = await action().TimeoutAfter(TimeSpan.FromSeconds(1));
@@ -31,7 +28,7 @@ public class Breaker<T> {
             }
         }
 
-        if (CircuitIsFaulted) { 
+        if (_circuitIsFaulted) {
             Console.WriteLine("Circuit is faulted.");
             return await WhenOpen;
         }
@@ -46,12 +43,12 @@ public class Breaker<T> {
     }
 
     private void ExtendOpenTimeout() {
-        _halfOpenAt = DateTime.UtcNow.Ticks + TimeSpan.FromSeconds(TryCloseAfterSeconds).Ticks;
+        _halfOpenAt = _clock.UtcNow.Ticks + TimeSpan.FromSeconds(TryCloseAfterSeconds).Ticks;
         Console.WriteLine($"Circuit opened due to too many failures.  Will try to close at {new DateTime(_halfOpenAt)}");
     }
 
     private void OpenCircuit() {
-        _halfOpenAt = DateTime.UtcNow.Ticks + TimeSpan.FromSeconds(TryCloseAfterSeconds).Ticks;
+        _halfOpenAt = _clock.UtcNow.Ticks + TimeSpan.FromSeconds(TryCloseAfterSeconds).Ticks;
         Console.WriteLine($"Circuit opened due to too many failures.  Will try to close at {new DateTime(_halfOpenAt)}");
     }
 
@@ -66,7 +63,7 @@ public class Breaker<T> {
 
         Console.WriteLine($"Failure Count: {_failedAttempts} - {TripAfterFailuresCount}");
 
-        if(CircuitIsFaulted) {
+        if (_circuitIsFaulted) {
             OpenCircuit();
             return;
         }
