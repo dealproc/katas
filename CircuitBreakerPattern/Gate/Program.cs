@@ -1,8 +1,11 @@
+using Toolkit;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls(new[] { "https://localhost:7121/" });
 
 // Add services to the container.
+builder.Services.AddSingleton<IClock, SystemClock>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

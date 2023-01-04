@@ -1,6 +1,7 @@
-namespace Gate;
+namespace Toolkit;
 
 public class Breaker<T> {
+    private readonly IClock _clock;
     private int _failedAttempts = 0;
     private long _halfOpenAt = 0;
 
@@ -8,6 +9,10 @@ public class Breaker<T> {
     public int TryCloseAfterSeconds { get; set; } = 15;
     public Task<T> WhenOpen { get; set; } = new Task<T>(() => throw new NotImplementedException());
 
+
+    public Breaker(IClock clock) {
+        _clock = clock;
+    }
 
 
     private bool CircuitIsFaulted => _failedAttempts >= TripAfterFailuresCount;

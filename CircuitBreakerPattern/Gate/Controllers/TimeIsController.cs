@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Toolkit;
+
 namespace Gate.Controllers;
 
 [ApiController]
@@ -9,17 +11,12 @@ public class TimeIsController : ControllerBase
     private static HttpClient _client = new HttpClient() {
         BaseAddress = new Uri("https://localhost:7120/")
     };
-    private static Breaker<IActionResult> _breaker;
-    static TimeIsController() {
-        _breaker = new Breaker<IActionResult>(){
-            WhenOpen = Task.FromResult<IActionResult>(new BadRequestResult())
-        };
-    }
+    private Breaker<IActionResult> _breaker;
 
     private readonly ILogger<TimeIsController> _logger;
 
-    public TimeIsController(ILogger<TimeIsController> logger)
-    {
+    public TimeIsController(IClock clock, ILogger<TimeIsController> logger) {
+        _breaker = new Breaker<IActionResult>(clock);
         _logger = logger;
     }
 
