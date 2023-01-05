@@ -41,7 +41,7 @@ public class Breaker<T> {
 
     private void ExtendOpenTimeout() {
         _halfOpenAt = _clock.UtcNow.Ticks + TimeSpan.FromSeconds(TryCloseAfterSeconds).Ticks;
-        Console.WriteLine($"Circuit opened due to too many failures.  Will try to close at {new DateTime(_halfOpenAt)}");
+        Console.WriteLine($"Cannot close circuit.  Will try to close again at {new DateTime(_halfOpenAt)}");
     }
 
     private void OpenCircuit() {
