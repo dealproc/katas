@@ -75,7 +75,7 @@ public class Circuit_breakers_should : IAsyncLifetime {
     }
 
     [Fact]
-    public async Task reopen_after_time_passes_and_subsequent_calls_succeed() {
+    public async Task close_after_time_passes_and_subsequent_calls_succeed() {
         for (var i = 0; i < _breaker.TripAfterFailuresCount; i++) {
             Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
