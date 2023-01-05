@@ -29,7 +29,8 @@ namespace Trading {
                 ? validPrices.Max(pv => pv.Price)
                 : 0;
 
-            if ((peakValue * 0.9M) >= newPrice) {
+            var tenPercentLess = peakValue * 0.9M;
+            if (newPrice < tenPercentLess) {
                 Raise(new OrderMsgs.Sell(Id, newPrice));
             }
         }
