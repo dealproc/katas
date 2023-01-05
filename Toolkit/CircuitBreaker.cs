@@ -22,24 +22,21 @@ public class Breaker<T> {
                 var response = await action().TimeoutAfter(TimeSpan.FromSeconds(1));
                 CloseCircuit();
                 return response;
-            } catch (TimeoutException) {
+            } catch {
                 ExtendOpenTimeout();
-                return await WhenOpen;
+            }
+        } else if (_circuitIsFaulted) {
+            Console.WriteLine("Circuit is faulted.");
+        } else {
+            try {
+                Console.WriteLine("Circuit is closed.");
+                return await action().TimeoutAfter(TimeSpan.FromSeconds(1));
+            } catch {
+                IncrementFailureCount();
             }
         }
 
-        if (_circuitIsFaulted) {
-            Console.WriteLine("Circuit is faulted.");
-            return await WhenOpen;
-        }
-
-        Console.WriteLine("Circuit is closed.");
-        try {
-            return await action().TimeoutAfter(TimeSpan.FromSeconds(1));
-        } catch (TimeoutException) {
-            IncrementFailureCount();
-            return await WhenOpen;
-        }
+        return await WhenOpen;
     }
 
     private void ExtendOpenTimeout() {

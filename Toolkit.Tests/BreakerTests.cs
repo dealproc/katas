@@ -29,7 +29,7 @@ public class Circuit_breakers_should : IAsyncLifetime {
     [Fact]
     public async Task execute_appropriate_method_when_failing() {
         _breaker.WhenOpen = Task.FromException<bool>(new BreakerTestsException());
-        Should.Throw<BreakerTestsException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException("Should not be thrown."))));
+        Should.Throw<BreakerTestsException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception("Should not be thrown."))));
     }
 
     [Theory]
@@ -37,7 +37,7 @@ public class Circuit_breakers_should : IAsyncLifetime {
     [InlineData(2)]
     public async Task increment_its_failed_attempts_for_each_failure(int numberOfFailures) {
         for (var i = 0; i < numberOfFailures; i++) {
-            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
 
         _breaker._failedAttempts.ShouldBe(numberOfFailures);
@@ -46,7 +46,7 @@ public class Circuit_breakers_should : IAsyncLifetime {
     [Fact]
     public void be_opened_after_maximum_failures() {
         for (var i = 0; i < _breaker.TripAfterFailuresCount; i++) {
-            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
 
         _breaker._circuitIsFaulted.ShouldBeTrue();
@@ -55,7 +55,7 @@ public class Circuit_breakers_should : IAsyncLifetime {
     [Fact]
     public void be_half_open_after_time_passes() {
         for (var i = 0; i < _breaker.TripAfterFailuresCount; i++) {
-            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
 
         _testClock.Advance(TimeSpan.FromSeconds(_breaker.TryCloseAfterSeconds).Add(TimeSpan.FromTicks(1))); // should be in half-open state.
@@ -66,18 +66,18 @@ public class Circuit_breakers_should : IAsyncLifetime {
     [Fact]
     public void return_whenopen_value_when_faulted() {
         for (var i = 0; i < _breaker.TripAfterFailuresCount; i++) {
-            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
 
         _breaker.WhenOpen = Task.FromException<bool>(new BreakerTestsException());
 
-        Should.Throw<BreakerTestsException>(async () => await _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+        Should.Throw<BreakerTestsException>(async () => await _breaker.Execute(() => Task.FromException<bool>(new Exception())));
     }
 
     [Fact]
     public async Task reopen_after_time_passes_and_subsequent_calls_succeed() {
         for (var i = 0; i < _breaker.TripAfterFailuresCount; i++) {
-            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new TimeoutException())));
+            Should.Throw<NotImplementedException>(() => _breaker.Execute(() => Task.FromException<bool>(new Exception())));
         }
 
         _testClock.Advance(TimeSpan.FromSeconds(_breaker.TryCloseAfterSeconds).Add(TimeSpan.FromTicks(1))); // should be in half-open state.
